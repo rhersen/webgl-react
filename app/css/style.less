@@ -1,0 +1,24 @@
+
+body {
+    background-color: darkslategray;
+}
+
+stop.begin {
+    stop-color: yellow;
+}
+
+stop.end {
+    stop-color: green;
+}
+
+body.invalid stop.end {
+    stop-color: red;
+}
+
+#err {
+    display: none;
+}
+
+body.invalid #err {
+    display: inline;
+}
