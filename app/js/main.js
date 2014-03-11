@@ -12,31 +12,9 @@ var Hand = React.createClass({
    }
 });
 
-var ReactRoot = React.createClass({
-   getInitialState: function () {
-      return {
-         millis: Date.now(),
-         timezoneOffset: new Date().getTimezoneOffset()
-      };
-   },
-
-   tick: function () {
-      this.setState({
-         millis: Date.now()
-      });
-      this.request = requestAnimationFrame(this.tick);
-   },
-
-   componentDidMount: function () {
-      this.request = requestAnimationFrame(this.tick);
-   },
-
-   componentWillUnmount: function () {
-      cancelAnimationFrame(this.request);
-   },
-
+var Clock = React.createClass({
    getAngle: function (cycleTime) {
-      var millis = this.state.millis - this.state.timezoneOffset * 60000;
+      var millis = this.props.millis - this.props.timezoneOffset * 60000;
       return 2 * Math.PI * (millis % cycleTime) / cycleTime;
    },
 
@@ -65,5 +43,36 @@ var ReactRoot = React.createClass({
             angle: this.getAngle(60000)
          })
       );
+   }
+});
+
+var ReactRoot = React.createClass({
+   getInitialState: function () {
+      return {
+         millis: Date.now(),
+         timezoneOffset: new Date().getTimezoneOffset()
+      };
+   },
+
+   tick: function () {
+      this.setState({
+         millis: Date.now()
+      });
+      this.request = requestAnimationFrame(this.tick);
+   },
+
+   componentDidMount: function () {
+      this.request = requestAnimationFrame(this.tick);
+   },
+
+   componentWillUnmount: function () {
+      cancelAnimationFrame(this.request);
+   },
+
+   render: function () {
+      return Clock({
+         millis: this.state.millis,
+         timezoneOffset: this.state.timezoneOffset
+      });
    }
 });
