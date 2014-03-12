@@ -5,7 +5,7 @@ var Hand = React.createClass({
          y1: 0,
          x2: this.props.length * Math.sin(this.props.angle),
          y2: this.props.length * -Math.cos(this.props.angle),
-         strokeLinecap: "round",
+         strokeLinecap: "square",
          strokeWidth: this.props.width,
          stroke: "darkslategray"
       });
@@ -14,8 +14,11 @@ var Hand = React.createClass({
 
 var Clock = React.createClass({
    getAngle: function (cycleTime) {
-      var millis = this.props.millis - this.props.timezoneOffset * 60000;
-      return 2 * Math.PI * (millis % cycleTime) / cycleTime;
+      return 2 * Math.PI * (this.getMillis() % cycleTime) / cycleTime;
+   },
+
+   getMillis: function () {
+      return this.props.millis - this.props.timezoneOffset * 60000;
    },
 
    render: function () {
@@ -26,7 +29,7 @@ var Clock = React.createClass({
             cx: 0,
             cy: 0,
             r: 1,
-            fill: "salmon"}),
+            fill: "ivory"}),
          Hand({
             length: 0.7,
             width: 0.1,
@@ -89,22 +92,22 @@ var ReactRoot = React.createClass({
       return React.DOM.div({},
          React.DOM.button({
                onClick: this.tick,
-               disabled: !!this.state.request
+               disabled: this.state.request !== 0
             },
             'start'),
          React.DOM.button({
                onClick: this.stop,
-               disabled: !this.state.request
+               disabled: this.state.request === 0
             },
             'stop'),
          React.DOM.button({
                onClick: this.gmt,
-               disabled: !this.state.timezoneOffset
+               disabled: this.state.timezoneOffset === 0
             },
             'gmt'),
          React.DOM.button({
                onClick: this.local,
-               disabled: !!this.state.timezoneOffset
+               disabled: this.state.timezoneOffset !== 0
             },
             'local'),
          Clock({
