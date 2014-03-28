@@ -1,13 +1,11 @@
-var Clock = React.createClass({
-   getAngle: function (cycleTime) {
+window.Clock = React.createClass({
+   getAngle: (cycleTime) ->
       return 360 * (this.getMillis() % cycleTime) / cycleTime;
-   },
 
-   getMillis: function () {
+   getMillis: ->
       return this.props.millis - this.props.timezoneOffset * 60000;
-   },
 
-   render: function () {
+   render: ->
       return React.DOM.svg({
             viewBox: '-1.5 -1.5 3 3'
          },
@@ -30,5 +28,4 @@ var Clock = React.createClass({
             angle: this.getAngle(60000)
          })
       );
-   }
 });
