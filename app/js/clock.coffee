@@ -8,6 +8,8 @@ window.Clock = React.createClass({
    render: ->
       return React.DOM.svg({
             viewBox: '-1.5 -1.5 3 3'
+            width: '300'
+            height: '300'
          },
          React.DOM.circle(
             r: 1

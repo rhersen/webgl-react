@@ -48,4 +48,7 @@ window.ReactRoot = React.createClass
          Clock
             millis: @state.millis
             timezoneOffset: @state.timezoneOffset
+         WebGl
+            millis: @state.millis
+            timezoneOffset: @state.timezoneOffset
       )
