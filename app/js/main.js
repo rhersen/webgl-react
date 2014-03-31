@@ -61,53 +61,6 @@ var invert = (function () {
    };
 })();
 
-function getVertices() {
-   var lbf = [-1, -1, 1];
-   var rbf = [1, -1, 1];
-   var rtf = [1, 1, 1];
-   var ltf = [-1, 1, 1];
-   var lbb = [-1, -1, -1];
-   var rbb = [1, -1, -1];
-   var rtb = [1, 1, -1];
-   var ltb = [-1, 1, -1];
-   var cube = [
-      lbf, rbf, rtf, ltf,
-      lbb, ltb, rtb, rbb,
-      ltb, ltf, rtf, rtb,
-      lbb, rbb, rbf, lbf,
-      rbb, rtb, rtf, rbf,
-      lbb, lbf, ltf, ltb
-   ];
-
-   return _.flatten(cube);
-}
-
-function getNormals() {
-   var front = [0, 0, 1];
-   var back = [0, 0, -1];
-   var top = [0, 1, 0];
-   var bottom = [0, -1, 0];
-   var right = [1, 0, 0];
-   var left = [-1, 0, 0];
-   var cube = [front, back, top, bottom, right, left];
-
-   return _.flatten(_.map(cube, function (item) {
-      return _.map(_.range(4), function () {
-         return item;
-      });
-   }));
-}
-
-function getVertexIndices() {
-   var face = [ 0, 1, 2, 0, 2, 3 ];
-
-   return _.flatten(_.map(_.range(6), function (i) {
-      return _.map(face, function (x) {
-         return 4 * i + x;
-      });
-   }));
-}
-
 function makePerspective(fovy, aspect, znear, zfar) {
    var ymax = znear * Math.tan(fovy * Math.PI / 360.0);
    var ymin = -ymax;
