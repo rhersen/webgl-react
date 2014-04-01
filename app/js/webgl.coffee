@@ -6,7 +6,7 @@ window.WebGl = React.createClass
 
         @uniform 'p', makePerspective 45, @screenWidth / @screenHeight, 0.1, 10
 
-        m = mvRotate Math.PI * (Date.now() % 12000) / 6000
+        m = mvRotate @props.angle
         @uniform 'm', m
 
         @uniform 'n', transpose invert m
@@ -34,10 +34,10 @@ window.WebGl = React.createClass
                         varying vec3 l;
                         uniform mat4 n, m, p;
                         void main() {
-                        gl_Position = p * m * vec4(vertex, 1);
-                        l = vec3(0.6, 0.6, 0.6)+
-                        vec3(0.5, 0.5, 0.75) *
-                        max(dot((n * vec4(normal, 1.0)).xyz, vec3(0.85, 0.8, 0.75)), 0.0);
+                            gl_Position = p * m * vec4(vertex, 1);
+                            l = vec3(0.6, 0.6, 0.6)+
+                            vec3(0.5, 0.5, 0.75) *
+                            max(dot((n * vec4(normal, 1.0)).xyz, vec3(0.85, 0.8, 0.75)), 0.0);
                         }
                         "
 

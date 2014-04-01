@@ -21,12 +21,6 @@ window.ReactRoot = React.createClass
       cancelAnimationFrame @state.request
       @setState request: 0
 
-   gmt: ->
-      @setState timezoneOffset: 0
-
-   local: ->
-      @setState timezoneOffset: new Date().getTimezoneOffset()
-
    render: ->
       return React.DOM.div({},
          React.DOM.button(
@@ -37,18 +31,6 @@ window.ReactRoot = React.createClass
                onClick: @stop
                disabled: @state.request is 0
             'stop'),
-         React.DOM.button(
-               onClick: @gmt
-               disabled: @state.timezoneOffset is 0
-            'gmt'),
-         React.DOM.button(
-               onClick: @local
-               disabled: @state.timezoneOffset isnt 0
-            'local')
-         Clock
-            millis: @state.millis
-            timezoneOffset: @state.timezoneOffset
          WebGl
-            millis: @state.millis
-            timezoneOffset: @state.timezoneOffset
+            angle: Math.PI * (@state.millis % 4000) / 2000
       )
