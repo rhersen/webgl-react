@@ -4,7 +4,7 @@ window.WebGl = React.createClass
 
         @gl.useProgram @program
 
-        @uniform 'p', makePerspective 45, @screenWidth / @screenHeight, 0.1, 10
+        @uniform 'p', makePerspective Math.PI / 8, @screenWidth / @screenHeight, 0.1, 10
 
         m = mvRotate @props.angle
         @uniform 'm', m
@@ -97,8 +97,8 @@ window.WebGl = React.createClass
 
         unless @gl.getProgramParameter p, @gl.LINK_STATUS
             alert "ERROR:\nVALIDATE_STATUS:
-                                            #{ @gl.getProgramParameter p, @gl.VALIDATE_STATUS }\nERROR:
-                                            #{ @gl.getError() }\n\n- Vertex Shader -\n#{ @vertex }\n\n- Fragment Shader -\n#{ fragment}"
+                    #{ @gl.getProgramParameter p, @gl.VALIDATE_STATUS }\nERROR:
+                    #{ @gl.getError() }\n\n- Vertex Shader -\n#{ @vertex }\n\n- Fragment Shader -\n#{ fragment}"
             return null
 
         return p

@@ -3,8 +3,31 @@ window.transpose = (matrix) ->
         j = i % 4
         matrix[(i - j) / 4 + 4 * j]
 
+window.makePerspective = (fovy, aspect, znear, zfar) ->
+    ymax = znear * Math.tan fovy
+    ymin = -ymax
+    xmin = ymin * aspect
+    xmax = ymax * aspect
+
+    [
+        2 * znear / (xmax - xmin), 0, 0, 0
+        0, 2 * znear / (ymax - ymin), 0, 0
+        (xmax + xmin) / (xmax - xmin)
+        (ymax + ymin) / (ymax - ymin)
+        (znear + zfar) / (znear - zfar)
+        -1
+        0, 0, 2 * zfar * znear / (znear - zfar), 0
+    ]
+
 window.mvRotate = (angle) ->
-    multMatrix [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, -6, 1], rotation angle
+    translation = [
+        1, 0, 0, 0
+        0, 1, 0, 0
+        0, 0, 1, 0
+        0, 0, -6, 1
+    ]
+
+    multMatrix translation, rotation angle
 
 multMatrix = (left, right) ->
     f = (i) ->
@@ -14,7 +37,7 @@ multMatrix = (left, right) ->
         g = (n) ->
             get(left, i, n) * get(right, n, j)
 
-        [0...4].map(g).reduce sum
+        [0...4].map(g).reduce (a, b) -> a + b
 
     get = (target, i, j) ->
         target[i + 4 * j]
@@ -22,10 +45,10 @@ multMatrix = (left, right) ->
     [0...16].map f
 
 dotProduct = (vector) ->
-    vector.map((i) -> i * i).reduce sum
+    vector.map((i) -> i * i).reduce (a, b) -> a + b
 
 rotation = (angle) ->
-    axis = [1, 0, 1]
+    axis = [0.5, 0.6, 0.7]
     mod = Math.sqrt(dotProduct(axis))
     e0 = axis[0] / mod
     e1 = axis[1] / mod
@@ -41,9 +64,9 @@ rotation = (angle) ->
         tn * e0 * e1 + sn * e2
 
     [
-        pcs(e0), s(e0, e1, e2), s(e0, e2, -e1), 0,
-        s(e0, e1, -e2), pcs(e1), s(e1, e2, e0), 0,
-        s(e0, e2, e1), s(e1, e2, -e0), pcs(e2), 0,
+        pcs(e0), s(e0, e1, e2), s(e0, e2, -e1), 0
+        s(e0, e1, -e2), pcs(e1), s(e1, e2, e0), 0
+        s(e0, e2, e1), s(e1, e2, -e0), pcs(e2), 0
         0, 0, 0, 1
     ]
 
@@ -81,7 +104,7 @@ invertClosure = () ->
 
         src = transpose matrix
         dst = [0...16].map adjoint
-        determinant = [0...4].map(multSrcDst).reduce sum
+        determinant = [0...4].map(multSrcDst).reduce (a, b) -> a + b
 
         dst.map (x) -> x / determinant
 
