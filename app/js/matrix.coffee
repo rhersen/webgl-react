@@ -29,6 +29,9 @@ window.mvRotate = (angle) ->
 
     multMatrix translation, rotation angle
 
+sum = (a, b) ->
+    a + b
+
 multMatrix = (left, right) ->
     f = (i) ->
         getSum left, i % 4, right, (i - i % 4) / 4
@@ -37,7 +40,7 @@ multMatrix = (left, right) ->
         g = (n) ->
             get(left, i, n) * get(right, n, j)
 
-        [0...4].map(g).reduce (a, b) -> a + b
+        [0...4].map(g).reduce sum
 
     get = (target, i, j) ->
         target[i + 4 * j]
@@ -45,7 +48,7 @@ multMatrix = (left, right) ->
     [0...16].map f
 
 dotProduct = (vector) ->
-    vector.map((i) -> i * i).reduce (a, b) -> a + b
+    vector.map((i) -> i * i).reduce sum
 
 rotation = (angle) ->
     axis = [0.5, 0.6, 0.7]
@@ -70,42 +73,36 @@ rotation = (angle) ->
         0, 0, 0, 1
     ]
 
-invertClosure = () ->
+window.invert = (matrix) ->
     getColumn = (n) ->
         n % 4
 
     getRow = (n) ->
         (n - getColumn(n)) / 4
 
-    getSign = (n) ->
-        getRow(n) % 2 is getColumn(n) % 2 ? 1 : -1
-
     getIndices = (n) ->
         hasSameRowOrColumn = (i) ->
-            getColumn(i) is getColumn(n) || getRow(i) is getRow(n)
+            return getColumn(i) is getColumn(n) || getRow(i) is getRow(n)
 
         [0...16].filter (i) -> !hasSameRowOrColumn i
 
-    indices = [0...16].map getIndices
-    sign = [0...16].map getSign
+    getSign = (n) ->
+        if getRow(n) % 2 is getColumn(n) % 2 then 1 else -1
 
-    (matrix) ->
-        cofactors = (src, i) ->
-            cofactor = (j) ->
-                src[i[j[0]]] * src[i[j[1]]] * src[i[j[2]]]
+    adjoint = (n) ->
+        getSign(n) * cofactors src, getIndices n
 
-            cofactor([0, 4, 8]) + cofactor([1, 5, 6]) + cofactor([2, 3, 7]) - cofactor([0, 5, 7]) - cofactor([1, 3, 8]) - cofactor([2, 4, 6])
+    multSrcDst = (i) ->
+        src[i] * dst[i]
 
-        adjoint = (n) ->
-            sign[n] * cofactors src, indices[n]
+    cofactors = (src, i) ->
+        cofactor = (j) -> src[i[j[0]]] * src[i[j[1]]] * src[i[j[2]]]
 
-        multSrcDst = (i) ->
-            src[i] * dst[i]
+        cofactor([0, 4, 8]) + cofactor([1, 5, 6]) + cofactor([2, 3, 7]) -
+        cofactor([0, 5, 7]) - cofactor([1, 3, 8]) - cofactor([2, 4, 6])
 
-        src = transpose matrix
-        dst = [0...16].map adjoint
-        determinant = [0...4].map(multSrcDst).reduce (a, b) -> a + b
+    src = transpose matrix
+    dst = [0...16].map adjoint
+    determinant = [0...4].map(multSrcDst).reduce sum
 
-        dst.map (x) -> x / determinant
-
-window.invert = invertClosure()
+    dst.map (x) -> x / determinant
